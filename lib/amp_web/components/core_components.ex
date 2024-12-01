@@ -16,6 +16,11 @@ defmodule AmpWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  use Phoenix.VerifiedRoutes,
+    endpoint: AmpWeb.Endpoint,
+    router: AmpWeb.Router,
+    statics: AmpWeb.static_paths()
+
   alias Phoenix.LiveView.JS
   import AmpWeb.Gettext
 
@@ -672,5 +677,14 @@ defmodule AmpWeb.CoreComponents do
   """
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  end
+
+  def example(assigns) do
+    assigns = assign(assigns, href: ~p"/?#{assigns.query}")
+    assigns = assign(assigns, title: assigns[:title] || "example")
+
+    ~H"""
+    <.link patch={@href}><%= @title %></.link>
+    """
   end
 end
